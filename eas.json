@@ -8,22 +8,23 @@
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
-        "image": "macos-sequoia-15.6-xcode-26.2"
+        "image": "latest"
       },
       "android": {
         "buildType": "apk"
       }
     },
     "preview": {
+      "autoIncrement": true,
       "distribution": "internal",
       "ios": {
-        "image": "macos-sequoia-15.6-xcode-26.2"
+        "image": "latest"
       }
     },
     "production": {
       "autoIncrement": true,
       "ios": {
-        "image": "macos-sequoia-15.6-xcode-26.2"
+        "image": "latest"
       }
     }
   },
