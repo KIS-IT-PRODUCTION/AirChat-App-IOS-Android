@@ -27,7 +27,7 @@
         "NSPhotoLibraryUsageDescription": "Додатку потрібен доступ до галереї для вибору фото."
       },
       "appleTeamId": "TX8D8AZ8N5",
-      "buildNumber": "5"
+      "buildNumber": "6"
     },
     "android": {
       "adaptiveIcon": {
@@ -80,7 +80,9 @@
           "color": "#ffffff"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "@react-native-community/datetimepicker",
+      "expo-image"
     ],
     "extra": {
       "eas": {

@@ -533,6 +533,16 @@
     "subtitle": "Щоб замовити трансфер, будь ласка, увійдіть або зареєструйтеся."
   },
   "flights": {
+    "search": "Знайти рейси",
+    "searchAirport": "Місто, назва або код (напр. KBP, Київ)",
+    "typeToSearch": "Введіть мінімум 2 символи для пошуку",
+    "noAirportsFound": "Аеропортів не знайдено",
+    "tryDifferentSearch": "Спробуйте інший запит або код IATA",
+    "airportsFound": "Знайдено: {{count}}",
+    "flightsFound_one": "рейс знайдено",
+    "flightsFound_few": "рейси знайдено",
+    "flightsFound_many": "рейсів знайдено",
+    "localTime": "місц. час",
     "title": "Розклад рейсів",
     "selectDate": "Оберіть дату",
     "selectCountry": "Оберіть країну",
@@ -557,6 +567,8 @@
     }
   },
   "errors": {
+    "fillAllFields": "Будь ласка, заповніть всі поля",
+    "flightLoadError": "Помилка завантаження рейсів",
     "apiError": "Помилка API",
     "unexpectedData": "Отримано неочікувану структуру даних",
     "networkTitle": "Помилка мережі",

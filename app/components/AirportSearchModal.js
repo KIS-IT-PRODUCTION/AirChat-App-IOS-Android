@@ -7,9 +7,12 @@ import { useTheme } from '../ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../config/supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ITEM_HEIGHT = 64;
-const DEBOUNCE_MS = 200; // faster than before (was 300ms)
+const DEBOUNCE_MS = 200;
+const STORAGE_KEY = '@recent_airports';
+const MAX_RECENT_ITEMS = 5;
 
 function countryCodeToEmoji(countryCode) {
     if (!countryCode || countryCode.length !== 2) return '🏳️';
@@ -20,7 +23,6 @@ function countryCodeToEmoji(countryCode) {
     return String.fromCodePoint(...codePoints);
 }
 
-// Sort results: exact IATA match first, then city starts-with, then rest
 function sortResults(results, query) {
     const q = query.trim().toUpperCase();
     return [...results].sort((a, b) => {
@@ -34,7 +36,7 @@ function sortResults(results, query) {
     });
 }
 
-const AirportItem = memo(({ item, onSelect, colors, styles }) => {
+const AirportItem = memo(({ item, onSelect, styles }) => {
     const displayName = item.name_uk || item.city || item.name;
     const subDisplayName = item.name_uk
         ? `${item.city}${item.country_code ? `, ${item.country_code}` : ''}`
@@ -64,14 +66,22 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
     const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
     const [results, setResults] = useState([]);
+    const [recentAirports, setRecentAirports] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const inputRef = useRef(null);
     const abortRef = useRef(false);
 
+    // Завантаження історії пошуку при відкритті модалки
+    useEffect(() => {
+        if (visible) {
+            loadRecentAirports();
+        }
+    }, [visible]);
+
+    // Основний ефект пошуку з дебаунсом
     useEffect(() => {
         const q = searchQuery.trim();
 
-        // Clear if too short
         if (q.length < 2) {
             setResults([]);
             setIsLoading(false);
@@ -85,19 +95,18 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
             if (abortRef.current) return;
 
             try {
-                const searchTerm = `%${q}%`;
+                const searchTerm = `${q}%`; 
 
                 const { data, error } = await supabase
                     .from('airports')
-                    .select('iata_code, name, name_uk, city, country_code, timezone')
-                    // Only select needed columns for performance ↑
+                    .select('iata_code, name, name_uk, city, country_code')
                     .or(
-                        `iata_code.ilike."${searchTerm}",` +
-                        `city.ilike."${searchTerm}",` +
-                        `name.ilike."${searchTerm}",` +
-                        `name_uk.ilike."${searchTerm}"`
+                        `iata_code.ilike.${searchTerm},` +
+                        `city.ilike.${searchTerm},` +
+                        `name.ilike.${searchTerm},` +
+                        `name_uk.ilike.${searchTerm}`
                     )
-                    .limit(25);
+                    .limit(40);
 
                 if (abortRef.current) return;
 
@@ -125,6 +134,41 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
         };
     }, [searchQuery]);
 
+    // Логіка роботи з локальним сховищем (AsyncStorage)
+    const loadRecentAirports = async () => {
+        try {
+            const stored = await AsyncStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                setRecentAirports(JSON.parse(stored));
+            }
+        } catch (e) {
+            console.error('Failed to load recent airports', e);
+        }
+    };
+
+    const saveRecentAirport = async (airport) => {
+        try {
+            // Фільтруємо копії: видаляємо елемент, якщо він вже був у списку
+            const filtered = recentAirports.filter(item => item.iata_code !== airport.iata_code);
+            // Додаємо новий елемент на початок масиву та обмежуємо ліміт
+            const updated = [airport, ...filtered].slice(0, MAX_RECENT_ITEMS);
+            
+            setRecentAirports(updated);
+            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        } catch (e) {
+            console.error('Failed to save recent airport', e);
+        }
+    };
+
+    const clearRecentAirports = async () => {
+        try {
+            await AsyncStorage.removeItem(STORAGE_KEY);
+            setRecentAirports([]);
+        } catch (e) {
+            console.error('Failed to clear recent airports', e);
+        }
+    };
+
     const handleClose = () => {
         setSearchQuery('');
         setResults([]);
@@ -132,9 +176,10 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
         onClose();
     };
 
-    const handleSelect = (airport) => {
+    const handleSelect = async (airport) => {
         setSearchQuery('');
         setResults([]);
+        await saveRecentAirport(airport);
         onSelect(airport);
     };
 
@@ -142,7 +187,6 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
         <AirportItem
             item={item}
             onSelect={handleSelect}
-            colors={colors}
             styles={styles}
         />
     );
@@ -162,7 +206,6 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
                     <View style={styles.handleBar} />
                     <Text style={[styles.modalTitle, { color: colors.text }]}>{title}</Text>
 
-                    {/* Search input */}
                     <View style={[styles.searchContainer, isLoading && styles.searchContainerActive]}>
                         {isLoading ? (
                             <ActivityIndicator size="small" color={colors.primary} style={styles.searchIcon} />
@@ -180,7 +223,6 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
                             autoCorrect={false}
                             autoCapitalize="none"
                             returnKeyType="search"
-                            clearButtonMode="while-editing"
                         />
                         {searchQuery.length > 0 && (
                             <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
@@ -189,21 +231,37 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
                         )}
                     </View>
 
-                    {/* Results count */}
                     {results.length > 0 && (
                         <Text style={styles.resultsCount}>
                             {t('flights.airportsFound', { count: results.length, defaultValue: `Знайдено: ${results.length}` })}
                         </Text>
                     )}
 
-                    {/* States */}
                     {showPrompt ? (
-                        <View style={styles.promptContainer}>
-                            <Ionicons name="airplane-outline" size={40} color={colors.border} />
-                            <Text style={styles.promptText}>
-                                {t('flights.typeToSearch', 'Введіть мінімум 2 символи для пошуку')}
-                            </Text>
-                        </View>
+                        recentAirports.length > 0 ? (
+                            // Показуємо історію пошуку замість порожнього екрана, якщо вона є
+                            <View style={{ flex: 1 }}>
+                                <View style={styles.recentHeader}>
+                                    <Text style={styles.recentTitle}>{t('flights.recentSearches', 'Останні пошуки')}</Text>
+                                    <TouchableOpacity onPress={clearRecentAirports}>
+                                        <Text style={styles.clearRecentText}>{t('flights.clearHistory', 'Очистити')}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <FlatList
+                                    data={recentAirports}
+                                    keyExtractor={(item) => `recent-${item.iata_code}`}
+                                    renderItem={renderItem}
+                                    keyboardShouldPersistTaps="handled"
+                                />
+                            </View>
+                        ) : (
+                            <View style={styles.promptContainer}>
+                                <Ionicons name="airplane-outline" size={40} color={colors.border} />
+                                <Text style={styles.promptText}>
+                                    {t('flights.typeToSearch', 'Введіть мінімум 2 символи для пошуку')}
+                                </Text>
+                            </View>
+                        )
                     ) : showEmptyState ? (
                         <View style={styles.promptContainer}>
                             <Ionicons name="search-outline" size={40} color={colors.border} />
@@ -217,7 +275,7 @@ const AirportSearchModal = ({ visible, onClose, onSelect, title }) => {
                     ) : (
                         <FlatList
                             data={results}
-                            keyExtractor={(item) => `${item.iata_code}-${item.name}`}
+                            keyExtractor={(item) => item.iata_code}
                             renderItem={renderItem}
                             getItemLayout={(_, index) => ({
                                 length: ITEM_HEIGHT,
@@ -293,8 +351,6 @@ const getStyles = (colors) => StyleSheet.create({
         marginBottom: 8,
         marginLeft: 4,
     },
-
-    // List item
     modalItem: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -322,8 +378,6 @@ const getStyles = (colors) => StyleSheet.create({
         color: colors.primary,
         letterSpacing: 0.5,
     },
-
-    // Empty / prompt states
     promptContainer: {
         alignItems: 'center',
         marginTop: 48,
@@ -347,6 +401,26 @@ const getStyles = (colors) => StyleSheet.create({
         color: colors.secondaryText,
         fontSize: 13,
     },
+    // Стилі для блоку історії
+    recentHeader: {
+        flexDirection: 'row',
+        justifyContent: 'between',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 12,
+        marginBottom: 8,
+        paddingHorizontal: 4,
+    },
+    recentTitle: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: colors.text,
+    },
+    clearRecentText: {
+        fontSize: 13,
+        color: colors.primary,
+        fontWeight: '500',
+    }
 });
 
 export default memo(AirportSearchModal);
