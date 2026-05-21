@@ -26,7 +26,7 @@
     "check": "^1.0.0",
     "date-fns": "^4.1.0",
     "expo": "55",
-    "expo-av": "^16.0.8",
+    "expo-av": "~15.0.1",
     "expo-clipboard": "~55.0.13",
     "expo-dev-client": "~55.0.35",
     "expo-device": "~55.0.17",

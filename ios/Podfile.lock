@@ -1,7 +1,7 @@
 PODS:
   - EXApplication (55.0.15):
     - ExpoModulesCore
-  - EXAV (16.0.8):
+  - EXAV (15.0.2):
     - ExpoModulesCore
     - ReactCommon/turbomodule/core
   - EXConstants (55.0.16):
@@ -9,7 +9,7 @@ PODS:
   - EXJSONUtils (55.0.2)
   - EXManifests (55.0.17):
     - ExpoModulesCore
-  - Expo (55.0.25):
+  - Expo (55.0.26):
     - ExpoModulesCore
     - hermes-engine
     - RCTRequired
@@ -190,13 +190,13 @@ PODS:
     - ExpoModulesCore
   - ExpoDomWebView (55.0.6):
     - ExpoModulesCore
-  - ExpoFileSystem (55.0.21):
+  - ExpoFileSystem (55.0.22):
     - ExpoModulesCore
   - ExpoFont (55.0.8):
     - ExpoModulesCore
   - ExpoHaptics (55.0.14):
     - ExpoModulesCore
-  - ExpoImage (55.0.10):
+  - ExpoImage (55.0.11):
     - ExpoModulesCore
     - libavif/libdav1d
     - SDWebImage (~> 5.21.0)
@@ -2950,11 +2950,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   EXApplication: 82a44fa8236bb644a805ee21e64054eeb01d22ea
-  EXAV: b60fcf142fae6684d295bc28cd7cfcb3335570ea
+  EXAV: 4c41f0a6ae54a0b96597abc90e37962ab2ee0d85
   EXConstants: dadbeba983acc30f855a919658a2b34fbd86615d
   EXJSONUtils: 04bc3807d351331a5fe154ce1da596ec15d99169
   EXManifests: 35b26ca30c8a6bd427d1cba20348cd3c43684bb2
-  Expo: 0f613de6a50f0bb5e86de668daa9c3f247e05bb4
+  Expo: a74260e921728e06b81d3811a508acd5858812d6
   expo-dev-client: f65f51def820b8c6d4b249942c98538fc42a68b4
   expo-dev-launcher: f61d325756363aa4622b09d189955659f1afe297
   expo-dev-menu: ff595953daf028b6bd9f0fa9b77bf58fbc41fa66
@@ -2963,10 +2963,10 @@ SPEC CHECKSUMS:
   ExpoClipboard: 5d1b0cd2686406f21e616f2d9b3431259dee2e6a
   ExpoDevice: b8a65afe42c3c5934eb6983870672fe785b39dea
   ExpoDomWebView: b2e9d601f9cb77d3c97da73234e175b64be91928
-  ExpoFileSystem: 60d1020c4533ca9d8e9ca6b98d4e719c3e8185b2
+  ExpoFileSystem: 61e663d0bbd1a973d324530d1d6ee559a5e5192c
   ExpoFont: a7e34a75bdfb703fa07a0e87807f836236608c76
   ExpoHaptics: 679f09dc37d5981e619bc197732007a3334e80b8
-  ExpoImage: 74d26278507b0b0d85b1e50562412172603f59eb
+  ExpoImage: 5854bd51edd7c0a775755473598f9daeb3fde4e3
   ExpoImagePicker: 7c75b2f076d6f45598fcbd035908aebc4c2eb257
   ExpoKeepAwake: d0eb7a0719500d2a43fbf29b6f79e84d70c75ebf
   ExpoLinearGradient: dcbc1ca46ebfeb9d7646f49595057d161dae208e
