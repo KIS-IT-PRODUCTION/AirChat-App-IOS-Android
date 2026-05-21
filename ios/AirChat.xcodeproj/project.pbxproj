@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		1C31579ABC3B6D421F216BF6 /* libPods-AirChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4025A8DF570ACE701B1DC08 /* libPods-AirChat.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		987328E8300283598419E72C /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC80B60385A58B485A4E81C5 /* ExpoModulesProvider.swift */; };
+		43A9D6961F5EB892572707F5 /* libPods-AirChat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F0CFEFCBA21665FC68363A1 /* libPods-AirChat.a */; };
+		9A93BC3C8FD606BF7F355294 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9870519C219987564D96E8C2 /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		C061A1F7CD7D3820A7C45C25 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9C7E486B7FF0A898BCB2065A /* PrivacyInfo.xcprivacy */; };
+		BE8039DE6C7AA7AF55CDCA78 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91787561C3A89FD4EFD154BF /* ExpoModulesProvider.swift */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,13 +20,13 @@
 		13B07F961A680F5B00A75B9A /* AirChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AirChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = AirChat/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = AirChat/Info.plist; sourceTree = "<group>"; };
-		9C7E486B7FF0A898BCB2065A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = AirChat/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		5F0CFEFCBA21665FC68363A1 /* libPods-AirChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AirChat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7104286564D18E6971E3776E /* Pods-AirChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirChat.debug.xcconfig"; path = "Target Support Files/Pods-AirChat/Pods-AirChat.debug.xcconfig"; sourceTree = "<group>"; };
+		885BEC7A14B22FEB65A5AC6F /* Pods-AirChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirChat.release.xcconfig"; path = "Target Support Files/Pods-AirChat/Pods-AirChat.release.xcconfig"; sourceTree = "<group>"; };
+		91787561C3A89FD4EFD154BF /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-AirChat/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		9870519C219987564D96E8C2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = AirChat/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = AirChat/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B049F88327B975D993854B88 /* Pods-AirChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirChat.release.xcconfig"; path = "Target Support Files/Pods-AirChat/Pods-AirChat.release.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C60CA1120F184486B4C5AFDF /* Pods-AirChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AirChat.debug.xcconfig"; path = "Target Support Files/Pods-AirChat/Pods-AirChat.debug.xcconfig"; sourceTree = "<group>"; };
-		E4025A8DF570ACE701B1DC08 /* libPods-AirChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AirChat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EC80B60385A58B485A4E81C5 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-AirChat/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = AirChat/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* AirChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AirChat-Bridging-Header.h"; path = "AirChat/AirChat-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C31579ABC3B6D421F216BF6 /* libPods-AirChat.a in Frameworks */,
+				43A9D6961F5EB892572707F5 /* libPods-AirChat.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,42 +53,32 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				9C7E486B7FF0A898BCB2065A /* PrivacyInfo.xcprivacy */,
+				9870519C219987564D96E8C2 /* PrivacyInfo.xcprivacy */,
 			);
 			name = AirChat;
+			sourceTree = "<group>";
+		};
+		1C4C927D0627831BEC604412 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				72C1332815037DD3B98D221C /* AirChat */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				E4025A8DF570ACE701B1DC08 /* libPods-AirChat.a */,
+				5F0CFEFCBA21665FC68363A1 /* libPods-AirChat.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		4F742E5924B1CA2A1B7319D1 /* ExpoModulesProviders */ = {
+		72C1332815037DD3B98D221C /* AirChat */ = {
 			isa = PBXGroup;
 			children = (
-				815CA5D05FEB3BF711C96E6C /* AirChat */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
-		50FF457C896A7F05C20D501D /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				C60CA1120F184486B4C5AFDF /* Pods-AirChat.debug.xcconfig */,
-				B049F88327B975D993854B88 /* Pods-AirChat.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		815CA5D05FEB3BF711C96E6C /* AirChat */ = {
-			isa = PBXGroup;
-			children = (
-				EC80B60385A58B485A4E81C5 /* ExpoModulesProvider.swift */,
+				91787561C3A89FD4EFD154BF /* ExpoModulesProvider.swift */,
 			);
 			name = AirChat;
 			sourceTree = "<group>";
@@ -107,8 +97,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				50FF457C896A7F05C20D501D /* Pods */,
-				4F742E5924B1CA2A1B7319D1 /* ExpoModulesProviders */,
+				CBC5F6BC6649E9176964220E /* Pods */,
+				1C4C927D0627831BEC604412 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -132,6 +122,16 @@
 			path = AirChat/Supporting;
 			sourceTree = "<group>";
 		};
+		CBC5F6BC6649E9176964220E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7104286564D18E6971E3776E /* Pods-AirChat.debug.xcconfig */,
+				885BEC7A14B22FEB65A5AC6F /* Pods-AirChat.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -140,14 +140,14 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "AirChat" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				64F58D8D8105D25ABEC60CE6 /* [Expo] Configure project */,
+				1ECB82E2E9A2E50CD7A370EB /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				D1C0FF1313584189B230170B /* [Expo Dev Launcher] Strip Local Network Keys for Release */,
-				CADB8782CD9CADD8B2468D9D /* [CP] Embed Pods Frameworks */,
+				A7C7BBB401CC438C8DE5ABA4 /* [Expo Dev Launcher] Strip Local Network Keys for Release */,
+				82B918F2F0B3261D1D06E9AC /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -197,7 +197,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				C061A1F7CD7D3820A7C45C25 /* PrivacyInfo.xcprivacy in Resources */,
+				9A93BC3C8FD606BF7F355294 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,7 +243,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		64F58D8D8105D25ABEC60CE6 /* [Expo] Configure project */ = {
+		1ECB82E2E9A2E50CD7A370EB /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -317,7 +317,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AirChat/Pods-AirChat-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CADB8782CD9CADD8B2468D9D /* [CP] Embed Pods Frameworks */ = {
+		82B918F2F0B3261D1D06E9AC /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -339,7 +339,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AirChat/Pods-AirChat-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D1C0FF1313584189B230170B /* [Expo Dev Launcher] Strip Local Network Keys for Release */ = {
+		A7C7BBB401CC438C8DE5ABA4 /* [Expo Dev Launcher] Strip Local Network Keys for Release */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -361,7 +361,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				987328E8300283598419E72C /* ExpoModulesProvider.swift in Sources */,
+				BE8039DE6C7AA7AF55CDCA78 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,7 +370,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C60CA1120F184486B4C5AFDF /* Pods-AirChat.debug.xcconfig */;
+			baseConfigurationReference = 7104286564D18E6971E3776E /* Pods-AirChat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -407,7 +407,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B049F88327B975D993854B88 /* Pods-AirChat.release.xcconfig */;
+			baseConfigurationReference = 885BEC7A14B22FEB65A5AC6F /* Pods-AirChat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
