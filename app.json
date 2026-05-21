@@ -64,7 +64,8 @@
       [
         "react-native-maps",
         {
-          "googleMapsApiKey": "AIzaSyAKwWqSjapoyrIBnAxnbByX6PMJZWGgzlo"
+          "androidGoogleMapsApiKey": "AIzaSyAKwWqSjapoyrIBnAxnbByX6PMJZWGgzlo",
+          "iosGoogleMapsApiKey": "AIzaSyAKwWqSjapoyrIBnAxnbByX6PMJZWGgzlo"
         }
       ],
       [
@@ -88,8 +89,7 @@
       ],
       "expo-font",
       "@react-native-community/datetimepicker",
-      "expo-image",
-      "expo-audio"
+      "expo-image"
     ],
     "extra": {
       "eas": {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Video } from 'expo-av';
+// import { Video } from 'expo-av';
 import { useTheme } from '../ThemeContext';
 import { useTranslation } from 'react-i18next';
 
@@ -11,13 +11,13 @@ const FlightLoadingAnimation = () => {
 
     return (
         <View style={styles.container}>
-            <Video
+            {/* <Video
                 source={require('../../assets/video.mp4')}
                 style={styles.video}
                 isLooping
                 shouldPlay
                 resizeMode="cover"
-            />
+            /> */}
             <Text style={styles.text}>{t('flights.loading', 'Шукаємо найкращі рейси...')}</Text>
         </View>
     );

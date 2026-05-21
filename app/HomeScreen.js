@@ -152,7 +152,49 @@ const getStyles = (colors, theme) => StyleSheet.create({
     passengerCounter: { flexDirection: 'row', alignItems: 'center', gap: 20 },
     passengerCountText: { color: colors.text, fontSize: 22, fontWeight: 'bold', minWidth: 30, textAlign: 'center' },
 });
-const RoleSwitcher = ({ role, onSwitch, isSwitching }) => { const { colors } = useTheme(); const styles = getStyles(colors); const isDriver = role === 'driver'; const switchValue = useSharedValue(isDriver ? 1 : 0); useEffect(() => { switchValue.value = withSpring(isDriver ? 1 : 0, { damping: 15, stiffness: 120 }); }, [isDriver]); const pillStyle = useAnimatedStyle(() => ({ transform: [{ translateX: switchValue.value * 48 }] })); const passengerIconStyle = useAnimatedStyle(() => ({ color: interpolateColor(switchValue.value, [0, 1], ['#FFFFFF', colors.secondaryText]) })); const driverIconStyle = useAnimatedStyle(() => ({ color: interpolateColor(switchValue.value, [0, 1], [colors.secondaryText, '#FFFFFF']) })); if (isSwitching) { return ( <View style={[styles.roleSwitcher, { paddingHorizontal: 28, paddingVertical: 12 }]}><ActivityIndicator size="small" color={colors.primary} /></View> ); } return ( <View style={styles.roleSwitcher}><Animated.View style={[styles.rolePill, pillStyle]} /><TouchableOpacity style={styles.roleOption} onPress={() => onSwitch(false)} disabled={!isDriver}><Animated.View><Ionicons name="person-outline" size={20} style={passengerIconStyle} /></Animated.View></TouchableOpacity><TouchableOpacity style={styles.roleOption} onPress={() => onSwitch(true)} disabled={isDriver}><Animated.View><Ionicons name="car-sport-outline" size={20} style={driverIconStyle} /></Animated.View></TouchableOpacity></View> ); };
+const AnimatedIonicons = Animated.createAnimatedComponent(Ionicons);
+const RoleSwitcher = ({ role, onSwitch, isSwitching }) => {
+    const { colors } = useTheme();
+    const styles = getStyles(colors);
+    const isDriver = role === 'driver';
+    const switchValue = useSharedValue(isDriver ? 1 : 0);
+
+    useEffect(() => {
+        switchValue.value = withSpring(isDriver ? 1 : 0, { damping: 15, stiffness: 120 });
+    }, [isDriver]);
+
+    const pillStyle = useAnimatedStyle(() => ({
+        transform: [{ translateX: switchValue.value * 48 }],
+    }));
+
+    const passengerIconStyle = useAnimatedStyle(() => ({
+        color: interpolateColor(switchValue.value, [0, 1], ['#FFFFFF', colors.secondaryText]),
+    }));
+
+    const driverIconStyle = useAnimatedStyle(() => ({
+        color: interpolateColor(switchValue.value, [0, 1], [colors.secondaryText, '#FFFFFF']),
+    }));
+
+    if (isSwitching) {
+        return (
+            <View style={[styles.roleSwitcher, { paddingHorizontal: 28, paddingVertical: 12 }]}>
+                <ActivityIndicator size="small" color={colors.primary} />
+            </View>
+        );
+    }
+
+    return (
+        <View style={styles.roleSwitcher}>
+            <Animated.View style={[styles.rolePill, pillStyle]} />
+            <TouchableOpacity style={styles.roleOption} onPress={() => onSwitch(false)} disabled={!isDriver}>
+                <AnimatedIonicons name="person-outline" size={20} style={passengerIconStyle} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.roleOption} onPress={() => onSwitch(true)} disabled={isDriver}>
+                <AnimatedIonicons name="car-sport-outline" size={20} style={driverIconStyle} />
+            </TouchableOpacity>
+        </View>
+    );
+};
 const AnimatedBlock = ({ children, delay }) => ( <MotiView from={{ opacity: 0, translateY: 20 }} animate={{ opacity: 1, translateY: 0 }} transition={{ type: 'timing', duration: 500, delay }} >{children}</MotiView> );
 const AuthPromptModal = ({ visible, onClose, onLogin, onRegister }) => { const { colors, theme } = useTheme(); const { t } = useTranslation(); const styles = getStyles(colors, theme); return (<Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}><View style={styles.modalBackdrop}><View style={styles.modalContent}><TouchableOpacity style={styles.modalCloseButton} onPress={onClose}><Ionicons name="close" size={28} color={colors.secondaryText} /></TouchableOpacity><Text style={styles.modalTitle}>{t('authPrompt.title')}</Text><Text style={styles.modalSubtitle}>{t('authPrompt.subtitle')}</Text><View style={styles.modalButtonRow}><TouchableOpacity style={styles.modalSecondaryButton} onPress={onRegister}><Text style={styles.modalSecondaryButtonText}>{t('auth.register')}</Text></TouchableOpacity><TouchableOpacity style={styles.modalRowPrimaryButton} onPress={onLogin}><Text style={styles.modalPrimaryButtonText}>{t('auth.login')}</Text></TouchableOpacity></View></View></View></Modal>); };
 const AddCommentModal = ({ visible, onClose, onCommentSubmit, onCancelTransfer }) => { const { colors, theme } = useTheme(); const { t } = useTranslation(); const styles = getStyles(colors, theme); const [comment, setComment] = useState(''); useEffect(() => { if (visible) { setComment(''); } }, [visible]); const handleSendComment = () => { onCommentSubmit(comment); }; return (<Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}><KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.modalBackdrop}><Pressable style={styles.modalContent}><TouchableOpacity style={styles.modalCloseButton} onPress={onClose}><Ionicons name="close" size={28} color={colors.secondaryText} /></TouchableOpacity><Ionicons name="pencil-outline" size={48} color={colors.primary} style={{ marginBottom: 16 }} /><Text style={styles.modalTitle}>{t('addCommentModal.title')}</Text><Text style={styles.modalSubtitle}>{t('addCommentModal.subtitle')}</Text><TextInput style={styles.modalCommentInput} placeholder={t('addCommentModal.commentPlaceholder')} placeholderTextColor={colors.secondaryText} value={comment} onChangeText={setComment} multiline /><View style={styles.modalButtonRow}><TouchableOpacity style={styles.modalSecondaryButton} onPress={onClose}><Text style={styles.modalSecondaryButtonText}>{t('addCommentModal.skipButton')}</Text></TouchableOpacity><TouchableOpacity style={styles.modalRowPrimaryButton} onPress={handleSendComment}><Text style={styles.modalPrimaryButtonText}>{t('addCommentModal.sendButton')}</Text></TouchableOpacity></View><TouchableOpacity style={styles.modalDestructiveButton} onPress={onCancelTransfer}><Text style={styles.modalDestructiveButtonText}>{t('addCommentModal.cancelTransfer')}</Text></TouchableOpacity></Pressable></KeyboardAvoidingView></Modal>); };
