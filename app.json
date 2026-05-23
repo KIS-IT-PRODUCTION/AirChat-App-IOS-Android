@@ -27,7 +27,7 @@
         "NSPhotoLibraryUsageDescription": "Додатку потрібен доступ до галереї для вибору фото."
       },
       "appleTeamId": "TX8D8AZ8N5",
-      "buildNumber": "11"
+      "buildNumber": "12"
     },
     "android": {
       "adaptiveIcon": {

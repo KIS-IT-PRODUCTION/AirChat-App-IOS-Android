@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1026678528975",
+    "project_id": "airchat-6cfbc",
+    "storage_bucket": "airchat-6cfbc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026678528975:android:da34e95b368207998350ba",
+        "android_client_info": {
+          "package_name": "app.airchat.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANL6venCb0-wnI3vTayYj62Fh7HNV6N5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
