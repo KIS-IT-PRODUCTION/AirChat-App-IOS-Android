@@ -3,6 +3,7 @@ module.exports = function(api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
+      '@babel/plugin-proposal-dynamic-import',
       'react-native-reanimated/plugin',
     ],
   };
