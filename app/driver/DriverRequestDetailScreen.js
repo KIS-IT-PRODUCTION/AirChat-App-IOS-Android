@@ -16,13 +16,9 @@ import { useAuth } from '../../provider/AuthContext';
 import Logo from '../../assets/icon.svg';
 import { MotiView } from 'moti';
 
-// ─── Утиліти ────────────────────────────────────────────────────────────────
-
 const CURRENCIES = ['UAH', 'USD', 'EUR'];
 const HEADER_HEIGHT = Platform.select({ ios: 85, android: 100 });
-const MAPS_API_KEY = 'AIzaSyAKwWqSjapoyrIBnAxnbByX6PMJZWGgzlo';
-
-// ─── Малі компоненти ─────────────────────────────────────────────────────────
+const MAPS_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 const InfoRow = memo(({ icon, label, value, colors, valueStyle }) => {
   const styles = getStyles(colors);
@@ -90,8 +86,6 @@ const OtherDriverOffer = memo(({ offer, isChosen, onPress }) => {
     </TouchableOpacity>
   );
 });
-
-// ─── Модалка пропозиції ───────────────────────────────────────────────────────
 
 const SubmitOfferModal = memo(({ visible, onClose, onSubmit, isSubmitting }) => {
   const { colors } = useTheme();
@@ -181,26 +175,15 @@ const SubmitOfferModal = memo(({ visible, onClose, onSubmit, isSubmitting }) => 
   );
 });
 
-// ─── Компонент карти (винесений окремо для New Architecture) ──────────────────
-
-/**
- * ВАЖЛИВО для New Architecture (RN 0.83+):
- * - MapView має бути у окремому memo-компоненті
- * - provider={PROVIDER_GOOGLE} — завжди явно, для обох платформ
- * - НЕ використовуй liteMode на iOS
- * - fitToCoordinates викликати через невеликий setTimeout після монтування
- */
 const RouteMap = memo(({ routeCoordinates, fromLabel, toLabel, strokeColor }) => {
   const mapRef = useRef(null);
 
-  // fitToCoordinates після того як карта змонтувалась
   const handleMapReady = useCallback(() => {
     if (mapRef.current && routeCoordinates.length > 1) {
-      // Затримка потрібна — New Architecture рендерить нативний вид асинхронно
       setTimeout(() => {
         mapRef.current?.fitToCoordinates(routeCoordinates, {
           edgePadding: { top: 60, right: 60, bottom: 60, left: 60 },
-          animated: false, // false при onMapReady, щоб уникнути race condition
+          animated: false,
         });
       }, 300);
     }
@@ -215,17 +198,14 @@ const RouteMap = memo(({ routeCoordinates, fromLabel, toLabel, strokeColor }) =>
     <MapView
       ref={mapRef}
       style={StyleSheet.absoluteFillObject}
-      // PROVIDER_GOOGLE — обов'язково для обох платформ у New Architecture
       provider={PROVIDER_GOOGLE}
       onMapReady={handleMapReady}
-      // initialRegion замість region — не контролюємо стан карти ззовні
       initialRegion={{
         latitude: origin.latitude,
         longitude: origin.longitude,
         latitudeDelta: 0.5,
         longitudeDelta: 0.5,
       }}
-      // Ці пропси важливі для стабільності у New Architecture
       moveOnMarkerPress={false}
       scrollEnabled={false}
       zoomEnabled={false}
@@ -244,10 +224,8 @@ const RouteMap = memo(({ routeCoordinates, fromLabel, toLabel, strokeColor }) =>
   );
 });
 
-// ─── Головний екран ───────────────────────────────────────────────────────────
-
 export default function DriverRequestDetailScreen({ navigation, route }) {
-  const { transferId } = route.params;
+  const transferId = route.params?.transferId || route.params?.id;
   const { colors } = useTheme();
   const styles = getStyles(colors);
   const { t, i18n } = useTranslation();
@@ -261,10 +239,11 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [routeInfo, setRouteInfo] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [routeError, setRouteError] = useState(false);
 
-  // ── Завантаження маршруту ──
   const fetchRoute = useCallback(async (origin, destination) => {
     try {
+      setRouteError(false);
       const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&key=${MAPS_API_KEY}&language=${i18n.language}`;
       const response = await fetch(url);
       const json = await response.json();
@@ -279,13 +258,14 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
             duration: r.legs[0].duration.text,
           });
         }
+      } else {
+        setRouteError(true);
       }
     } catch (error) {
-      console.error('fetchRoute error:', error);
+      setRouteError(true);
     }
   }, [i18n.language]);
 
-  // ── Завантаження даних ──
   const fetchData = useCallback(async () => {
     if (!session?.user || !transferId) {
       setLoading(false);
@@ -312,13 +292,14 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
   }, [transferId, session, t, fetchRoute]);
 
   useEffect(() => {
-    supabase.rpc('mark_transfer_as_viewed', { p_transfer_id: transferId })
-      .then(({ error }) => { if (error) console.error('mark_viewed error:', error.message); });
+    if (transferId) {
+      supabase.rpc('mark_transfer_as_viewed', { p_transfer_id: transferId })
+        .then(({ error }) => { if (error) console.error(error.message); });
+    }
   }, [transferId]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  // ── Відправка пропозиції ──
   const handleSubmitOffer = useCallback(async ({ price, comment, currency }) => {
     setIsSubmitting(true);
     try {
@@ -341,7 +322,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
     navigation.navigate('PublicDriverProfile', { driverId });
   }, [navigation]);
 
-  // ── Стани завантаження / відсутності даних ──
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -385,7 +365,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
     transferData?.status === 'accepted' &&
     moment(transferData.transfer_datetime).isBefore(moment().subtract(2, 'days'));
 
-  // ── Рендер ──
   return (
     <SafeAreaView style={styles.container}>
       <SubmitOfferModal
@@ -403,7 +382,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
         <Logo width={40} height={40} />
       </View>
 
-      {/* Банер статусу */}
       {(transferData?.status === 'completed' || transferData?.status === 'cancelled') && (
         <View style={[
           styles.statusBanner,
@@ -446,7 +424,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
             animate={{ opacity: 1, translateY: 0 }}
             transition={{ type: 'timing', duration: 500 }}
           >
-            {/* Інфо пасажира */}
             <View style={styles.userInfoSection}>
               <Image
                 source={
@@ -467,7 +444,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
               </Text>
             </View>
 
-            {/* Маршрут (текст) */}
             <View style={styles.infoCard}>
               <InfoRow
                 icon={transferData?.direction === 'from_airport' ? 'airplane-outline' : 'location-outline'}
@@ -484,7 +460,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
               />
             </View>
 
-            {/* Деталі поїздки */}
             <View style={styles.infoCard}>
               <Text style={styles.sectionTitle}>{t('transferDetail.detailsTitle')}</Text>
               <View style={styles.detailsGrid}>
@@ -527,7 +502,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
               </View>
             </View>
 
-            {/* Коментар пасажира */}
             {transferData?.passenger_comment && (
               <View style={styles.infoCard}>
                 <Text style={styles.sectionTitle}>{t('transferDetail.clientComment')}</Text>
@@ -535,16 +509,14 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
               </View>
             )}
 
-            {/* ─── КАРТА (New Architecture safe) ─── */}
             <View style={styles.infoCard}>
               <Text style={styles.sectionTitle}>{t('transferDetail.route')}</Text>
               <View style={styles.mapContainer}>
-                {routeCoordinates.length > 1 ? (
-                  /**
-                   * RouteMap винесений в окремий memo-компонент.
-                   * Це критично для New Architecture — нативний вид не
-                   * перемонтовується при ре-рендері батьківського компонента.
-                   */
+                {routeError ? (
+                  <View style={styles.mapLoadingContainer}>
+                    <Text style={{ color: colors.secondaryText }}>{t('common.error')}</Text>
+                  </View>
+                ) : routeCoordinates.length > 1 ? (
                   <RouteMap
                     routeCoordinates={routeCoordinates}
                     fromLabel={t('transferDetail.from')}
@@ -580,7 +552,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
               )}
             </View>
 
-            {/* Пропозиції інших водіїв */}
             {allOffers.length > 0 && (
               <View style={styles.infoCard}>
                 <Text style={styles.sectionTitle}>{t('driverOffer.otherOffersTitle')}</Text>
@@ -595,7 +566,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
               </View>
             )}
 
-            {/* Секція своєї пропозиції */}
             {!isRequestClosed && !isOldAndAccepted && (
               <View style={styles.offerSection}>
                 <Text style={styles.sectionTitle}>
@@ -619,8 +589,6 @@ export default function DriverRequestDetailScreen({ navigation, route }) {
     </SafeAreaView>
   );
 }
-
-// ─── Стилі ───────────────────────────────────────────────────────────────────
 
 const getStyles = (colors) => StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background, paddingTop: Platform.OS === 'android' ? 25 : 0 },
@@ -648,7 +616,6 @@ const getStyles = (colors) => StyleSheet.create({
   passengerDetailItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   passengerDetailText: { color: colors.text, fontSize: 14, fontWeight: '500' },
   commentText: { color: colors.secondaryText, fontStyle: 'italic', fontSize: 15 },
-  // Карта — overflow: 'hidden' + фіксована висота обов'язково
   mapContainer: { height: 220, borderRadius: 12, overflow: 'hidden', backgroundColor: colors.border },
   mapLoadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.card },
   routeInfoContainer: { flexDirection: 'row', justifyContent: 'space-around', paddingTop: 16, marginTop: 16, borderTopWidth: 1, borderTopColor: colors.border },

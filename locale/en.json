@@ -355,8 +355,8 @@
     "cardDate": "D MMMM, HH:mm"
   },
   "onboarding": {
-    "welcomeTitle": "AirChat welcomes you!",
-    "welcomeText": "Plan trips, book airport transfers, communicate with drivers — all in one place.",
+    "welcomeTitle": "EuroBus welcomes you!",
+    "welcomeText": "Plan your trips, book airport transfers and travel in comfort — all in one app.",
     "configureTitle": "Set up your trip",
     "configureText": "Choose the date, time, number of passengers, and luggage.",
     "readyTitle": "All set!",
@@ -496,7 +496,7 @@
     "requestDetails": "Request details",
     "priceRequired": "Please specify a price.",
     "offerSent": "Your offer has been sent to the passenger!",
-    "otherOffersTitle": "Offers from other drivers",
+    "otherOffersTitle": "My suggestion",
     "noOtherOffers": "You are the first to make an offer!",
     "alreadyOffered": "You have already sent an offer",
     "yourOffer": "Your offer",

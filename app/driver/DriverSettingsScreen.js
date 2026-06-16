@@ -8,7 +8,8 @@ import { Image } from 'expo-image';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
+// Використовуємо legacy-модуль для стабільної роботи readAsStringAsync в Expo SDK 55
+import { readAsStringAsync } from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 import { MotiView } from 'moti';
 import { useTheme } from '../ThemeContext';
@@ -22,31 +23,28 @@ const EditableField = ({ labelKey, icon, value, isEditing, onToggleEdit, onChang
         <View style={styles.fieldContainer}><Text style={styles.label}>{t(labelKey)}</Text><View style={styles.inputWrapper}><Ionicons name={icon} size={20} color={colors.secondaryText} style={styles.inputIcon} />{isEditing ? (<TextInput style={styles.inputText} value={value} onChangeText={onChangeText} autoFocus={true} keyboardType={keyboardType} />) : (<Text style={styles.inputText} numberOfLines={1}>{value || t('settings.notSet')}</Text>)}<TouchableOpacity onPress={onToggleEdit}><Ionicons name={isEditing ? "checkmark-circle" : "create-outline"} size={24} color={isEditing ? colors.primary : colors.secondaryText} /></TouchableOpacity></View></View>
     );
 };
+
 const ReadOnlyField = ({ labelKey, icon, value }) => {
     const { colors } = useTheme(); const { t } = useTranslation(); const styles = getStyles(colors);
     return (
         <View style={styles.fieldContainer}><Text style={styles.label}>{t(labelKey)}</Text><View style={styles.inputWrapper}><Ionicons name={icon} size={20} color={colors.secondaryText} style={styles.inputIcon} /><Text style={[styles.inputText, { opacity: 0.7 }]}>{value}</Text></View></View>
     );
 };
+
 const PasswordField = ({ onNavigate }) => {
     const { colors } = useTheme(); const { t } = useTranslation(); const styles = getStyles(colors);
     return (
         <View style={styles.fieldContainer}><Text style={styles.label}>{t('registration.passwordLabel')}</Text><TouchableOpacity style={styles.inputWrapper} onPress={onNavigate}><Ionicons name="lock-closed-outline" size={20} color={colors.secondaryText} style={styles.inputIcon} /><Text style={styles.inputText}>••••••••</Text><Ionicons name="chevron-forward-outline" size={24} color={colors.secondaryText} /></TouchableOpacity></View>
     );
 };
+
 const CacheField = ({ onNavigate }) => {
     const { colors } = useTheme(); const { t } = useTranslation(); const styles = getStyles(colors);
     return (
-        <View style={styles.fieldContainer}>
-            <Text style={styles.label}>{t('settings.cache', 'Кеш')}</Text>
-            <TouchableOpacity style={styles.inputWrapper} onPress={onNavigate}>
-                <Ionicons name="trash-outline" size={20} color={colors.secondaryText} style={styles.inputIcon} />
-                <Text style={styles.inputText}>{t('settings.clearImageCache', 'Очистити кеш зображень')}</Text>
-                <Ionicons name="chevron-forward-outline" size={24} color={colors.secondaryText} />
-            </TouchableOpacity>
-        </View>
+        <View style={styles.fieldContainer}><Text style={styles.label}>{t('settings.cache', 'Кеш')}</Text><TouchableOpacity style={styles.inputWrapper} onPress={onNavigate}><Ionicons name="trash-outline" size={20} color={colors.secondaryText} style={styles.inputIcon} /><Text style={styles.inputText}>{t('settings.clearImageCache', 'Очистити кеш зображень')}</Text><Ionicons name="chevron-forward-outline" size={24} color={colors.secondaryText} /></TouchableOpacity></View>
     );
 };
+
 const ThemeSwitcher = () => {
     const { colors, theme, toggleTheme } = useTheme(); const styles = getStyles(colors); const { t } = useTranslation(); const isDark = theme === 'dark';
     return (
@@ -68,6 +66,7 @@ const AvatarSelectionModal = ({ visible, onClose, onPickFromGallery, onSelectPre
         </Modal>
     );
 };
+
 const ChangePasswordModal = ({ visible, onClose, onSave, isSaving }) => {
     const { colors } = useTheme(); const { t } = useTranslation(); const styles = getStyles(colors); const [newPassword, setNewPassword] = useState(''); const [confirmPassword, setConfirmPassword] = useState('');
     const handleSave = () => { if (newPassword.length < 6) { Alert.alert(t('common.error'), t('settings.passwordTooShort')); return; } if (newPassword !== confirmPassword) { Alert.alert(t('common.error'), t('settings.passwordsDoNotMatch')); return; } onSave(newPassword); };
@@ -105,7 +104,7 @@ const DriverSettingsScreen = ({ navigation }) => {
   const handleLanguageChange = useCallback((lang) => {
     i18n.changeLanguage(lang);
     setLanguageModalVisible(false);
-}, [i18n]);
+  }, [i18n]);
 
   const fetchProfile = useCallback(async () => {
     if (!session?.user) return;
@@ -135,8 +134,19 @@ const DriverSettingsScreen = ({ navigation }) => {
     setAvatarModalVisible(false);
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') { Alert.alert(t('common.error'), t('settings.galleryPermissionError')); return; }
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.7 });
-    if (!result.canceled) { setLocalAvatarUri(result.assets[0].uri); setAvatarUrl(null); }
+    
+    // Нові налаштування медіа-типів для Expo SDK 55
+    const result = await ImagePicker.launchImageLibraryAsync({ 
+      mediaTypes: ['images'], 
+      allowsEditing: true, 
+      aspect: [1, 1], 
+      quality: 0.7 
+    });
+    
+    if (!result.canceled) { 
+      setLocalAvatarUri(result.assets[0].uri); 
+      setAvatarUrl(null); 
+    }
   }, [t]);
 
   const handleSelectPresetAvatar = useCallback((avatar) => {
@@ -152,7 +162,8 @@ const DriverSettingsScreen = ({ navigation }) => {
     try {
       let finalAvatarUrl = avatarUrl;
       if (localAvatarUri) {
-        const base64 = await FileSystem.readAsStringAsync(localAvatarUri, { encoding: 'base64' });
+        // Використовуємо сумісний метод із legacy-модуля файлової системи
+        const base64 = await readAsStringAsync(localAvatarUri, { encoding: 'base64' });
         const fileExt = localAvatarUri.split('.').pop().toLowerCase();
         const filePath = `${session.user.id}.${fileExt}`;
         const contentType = `image/${fileExt}`;
@@ -230,18 +241,13 @@ const DriverSettingsScreen = ({ navigation }) => {
                 onPress: async () => {
                     try {
                         const { error } = await supabase.rpc('delete_my_account');
-                        
-                        if (error) {
-                          throw error;
-                        }
+                        if (error) throw error;
                         
                         Alert.alert(
                           t('settings.deleteSuccessTitle', 'Акаунт видалено'),
-                          t('settings.deleteSuccessBody', 'Ваш акаунт було успішно видалено.')
+                          t('settings.deleteSuccessBody', 'Ваш акаунт було успешно видалено.')
                         );
-                        
                         await signOut();
-                        
                     } catch (error) {
                       Alert.alert(
                         t('common.error', 'Помилка'), 
@@ -253,7 +259,9 @@ const DriverSettingsScreen = ({ navigation }) => {
         ]
     );
   }, [signOut, t]);
+
   const toggleEdit = (fieldName) => setEditingField(prev => (prev === fieldName ? null : fieldName));
+  
   const getDisplayAvatar = useCallback(() => {
     if (localAvatarUri) return { uri: localAvatarUri };
     if (avatarUrl) return { uri: avatarUrl };
@@ -261,42 +269,17 @@ const DriverSettingsScreen = ({ navigation }) => {
   }, [localAvatarUri, avatarUrl]);
 
   return (
-    
     <SafeAreaView style={styles.container}>
-      <Modal
-        visible={isLanguageModalVisible}
-        onRequestClose={() => setLanguageModalVisible(false)}
-        transparent={true}
-        animationType="slide"
-    >
-        <Pressable
-            style={styles.modalBackdrop}
-            onPress={() => setLanguageModalVisible(false)}
-        >
+      <Modal visible={isLanguageModalVisible} onRequestClose={() => setLanguageModalVisible(false)} transparent={true} animationType="slide">
+        <Pressable style={styles.modalBackdrop} onPress={() => setLanguageModalVisible(false)}>
             <View style={styles.avatarModalContent}>
-                <TouchableOpacity
-                    style={styles.langButton}
-                    onPress={() => handleLanguageChange('uk')}
-                >
-                    <Text style={styles.langButtonText}>Українська</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity
-                    style={styles.langButton}
-                    onPress={() => handleLanguageChange('en')}
-                >
-                    <Text style={styles.langButtonText}>English</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.langButton}
-                    onPress={() => handleLanguageChange('ro')}
-                >
-                    <Text style={styles.langButtonText}>Română</Text>
-                </TouchableOpacity>
+                <TouchableOpacity style={styles.langButton} onPress={() => handleLanguageChange('uk')}><Text style={styles.langButtonText}>Українська</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.langButton} onPress={() => handleLanguageChange('en')}><Text style={styles.langButtonText}>English</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.langButton} onPress={() => handleLanguageChange('ro')}><Text style={styles.langButtonText}>Română</Text></TouchableOpacity>
             </View>
         </Pressable>
-    </Modal>
+      </Modal>
+
       <AvatarSelectionModal visible={isAvatarModalVisible} onClose={() => setAvatarModalVisible(false)} onPickFromGallery={pickImage} onSelectPreset={handleSelectPresetAvatar} fullName={fullName} />
       <ChangePasswordModal visible={isPasswordModalVisible} onClose={() => setPasswordModalVisible(false)} onSave={handleChangePassword} isSaving={isPasswordSaving} />
       
@@ -310,25 +293,25 @@ const DriverSettingsScreen = ({ navigation }) => {
                 <>
                   <Text style={styles.sectionTitle}>{t('settings.modeSwitchTitle')}</Text>
                   <View style={styles.switchRow}>
-                    <Ionicons name="person-outline" size={24} color={colors.secondaryText} style={{ opacity: authProfile.role === 'client' ? 1 : 0.5 }} />
+                    <Ionicons name="person-outline" size={24} color={colors.secondaryText} style={{ opacity: authProfile?.role === 'client' ? 1 : 0.5 }} />
                     <Switch
                         trackColor={{ false: colors.border, true: colors.primary }}
                         thumbColor={colors.card}
                         onValueChange={handleRoleSwitch}
-                        value={authProfile.role === 'driver'}
+                        value={authProfile?.role === 'driver'}
                         disabled={isSwitchingRole} 
                     />
-                    <Ionicons name="car-sport-outline" size={24} color={colors.secondaryText} style={{ opacity: authProfile.role === 'driver' ? 1 : 0.5 }} />
+                    <Ionicons name="car-sport-outline" size={24} color={colors.secondaryText} style={{ opacity: authProfile?.role === 'driver' ? 1 : 0.5 }} />
                   </View>
                   {isSwitchingRole && <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 8 }} />}
-                  <Text style={styles.switchLabel}>{authProfile.role === 'driver' ? t('settings.driverModeActive') : t('settings.passengerModeActive')}</Text>
+                  <Text style={styles.switchLabel}>{authProfile?.role === 'driver' ? t('settings.driverModeActive') : t('settings.passengerModeActive')}</Text>
                 </>
               )}
               <Text style={styles.sectionTitle}>{t('settings.personalInfo')}</Text>
               <EditableField labelKey="registration.fullNameLabel" icon="person-outline" value={fullName} onChangeText={setFullName} isEditing={editingField === 'fullName'} onToggleEdit={() => toggleEdit('fullName')} />
               <EditableField labelKey="registration.phoneLabel" icon="call-outline" value={phone} onChangeText={setPhone} isEditing={editingField === 'phone'} onToggleEdit={() => toggleEdit('phone')} keyboardType="phone-pad" />
               
-              {authProfile.role === 'driver' && (
+              {authProfile?.role === 'driver' && (
                 <>
                   <Text style={styles.sectionTitle}>{t('settings.carInfo')}</Text>
                   <EditableField labelKey="settings.carMake" icon="car-sport-outline" value={carMake} onChangeText={setCarMake} isEditing={editingField === 'carMake'} onToggleEdit={() => toggleEdit('carMake')} />
@@ -351,10 +334,10 @@ const DriverSettingsScreen = ({ navigation }) => {
               <CacheField onNavigate={handleClearCache} />
             </View>
             <ThemeSwitcher />
-                  <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-            <Ionicons name="trash-bin-outline" size={22} color={colors.danger} />
-            <Text style={styles.deleteButtonText}>{t('settings.deleteAccount', 'Видалити акаунт назавжди')}</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+                <Ionicons name="trash-bin-outline" size={22} color={colors.danger} />
+                <Text style={styles.deleteButtonText}>{t('settings.deleteAccount', 'Видалити акаунт назавжди')}</Text>
+            </TouchableOpacity>
           </>
         )}
       </ScrollView>
@@ -391,24 +374,8 @@ const getStyles = (colors) => StyleSheet.create({
     saveButtonText: { color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' },
     logoutButton: { flexDirection: 'row', backgroundColor: 'transparent', borderRadius: 12, paddingVertical: 16, width: '100%', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 12 },
     logoutButtonText: { color: colors.primary, fontSize: 18, fontWeight: 'bold' },
-    
-    deleteButton: {
-        flexDirection: 'row',
-        backgroundColor: 'transparent',
-        borderRadius: 12,
-        paddingVertical: 14,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 8,
-        marginTop: 8,
-    },
-    deleteButtonText: {
-        color: colors.danger,
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    
+    deleteButton: { flexDirection: 'row', backgroundColor: 'transparent', borderRadius: 12, paddingVertical: 14, width: '100%', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8 },
+    deleteButtonText: { color: colors.danger, fontSize: 16, fontWeight: 'bold' },
     modalBackdrop: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0, 0, 0, 0.6)' },
     avatarModalContent: { backgroundColor: colors.card, padding: 24, borderTopLeftRadius: 20, borderTopRightRadius: 20, alignItems: 'center' },
     modalTitle: { fontSize: 20, fontWeight: 'bold', color: colors.text, marginBottom: 24 },
@@ -422,16 +389,6 @@ const getStyles = (colors) => StyleSheet.create({
     themeSwitchTrack: { width: 70, height: 34, borderRadius: 17, backgroundColor: colors.background, justifyContent: 'center', padding: 4 },
     themeSwitchThumb: { width: 26, height: 26, borderRadius: 13, backgroundColor: colors.primary, position: 'absolute', top: 4, left: 4 },
     themeIconContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 5 },
-    
-    langButton: {
-        paddingVertical: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border, 
-        width: '100%'
-    },
-    langButtonText: {
-        color: colors.text, 
-        fontSize: 18,
-        textAlign: 'center'
-    }
+    langButton: { paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: colors.border, width: '100%' },
+    langButtonText: { color: colors.text, fontSize: 18, textAlign: 'center' }
 });

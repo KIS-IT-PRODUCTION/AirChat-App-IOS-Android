@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "AirChat",
+    "name": "eurobus.airchat",
     "slug": "AirChat",
     "scheme": "airchat",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -27,7 +27,7 @@
         "NSPhotoLibraryUsageDescription": "Додатку потрібен доступ до галереї для вибору фото."
       },
       "appleTeamId": "TX8D8AZ8N5",
-      "buildNumber": "12"
+      "buildNumber": "13"
     },
     "android": {
       "adaptiveIcon": {
@@ -35,7 +35,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "app.airchat.mobile",
-      "versionCode": 12,
+      "versionCode": 16,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyAKwWqSjapoyrIBnAxnbByX6PMJZWGgzlo"

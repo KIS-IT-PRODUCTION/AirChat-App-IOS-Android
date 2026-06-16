@@ -355,8 +355,8 @@
     "cardDate": "D MMMM, HH:mm"
   },
   "onboarding": {
-    "welcomeTitle": "AirChat vă urează bun venit!",
-    "welcomeText": "Planificați călătorii, rezervați transferuri la aeroport, comunicați cu șoferii — totul într-un singur loc.",
+    "welcomeTitle": "EuroBus vă urează bun venit!",
+    "welcomeText": "Planificați-vă călătoriile, rezervați transferuri către aeroporturi și călătoriți în confort — totul într-o singură aplicație.",
     "configureTitle": "Configurați-vă călătoria",
     "configureText": "Alegeți data, ora, numărul de pasageri și bagajele.",
     "readyTitle": "Totul este gata!",
@@ -496,7 +496,7 @@
     "requestDetails": "Detaliile cererii",
     "priceRequired": "Vă rugăm să specificați prețul.",
     "offerSent": "Oferta dumneavoastră a fost trimisă pasagerului!",
-    "otherOffersTitle": "Ofertele altor șoferi",
+    "otherOffersTitle": "Propunerea mea",
     "noOtherOffers": "Sunteți primul care a făcut o ofertă!",
     "alreadyOffered": "Ați trimis deja o ofertă",
     "yourOffer": "Oferta ta",
